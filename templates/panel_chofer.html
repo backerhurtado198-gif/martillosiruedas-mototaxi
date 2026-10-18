@@ -41,7 +41,17 @@
             border-color: #198754 !important;
         }
     </style>
-    </head>
+    <link rel="manifest" href="/static/manifest.json">
+<meta name="theme-color" content="#FFD700">
+<link rel="apple-touch-icon" href="/static/uploads/logo.jpg">
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW ok')).catch(err => console.log('SW error', err));
+    });
+}
+</script>
+</head>
 <body>
     <div class="header">
         <div class="user-info">Chofer: <strong>{{ chofer.nombre }}</strong> (Placa: <span style="color: #ff9800;">{{ chofer.placa }}</span>)</div>
@@ -226,6 +236,7 @@
 </script>
 <script>let lastSt=null; setInterval(()=>{fetch('/api/actualizaciones_chofer').then(r=>r.json()).then(d=>{let currSt=d.solicitudes.map(s=>s.id+s.estado).join(','); if(lastSt!==null && currSt!==lastSt){window.location.reload();} lastSt=currSt;});}, 2500);</script>{% if activas %}<div style='position:fixed; bottom:20px; right:20px; background:#FFD700; color:#000; padding:20px; border-radius:15px; z-index:9999; box-shadow:0 4px 10px rgba(0,0,0,0.5); border: 2px solid #000;'><h3 style='margin-top:0;'>🚕 Viaje en Curso</h3><p><b>Pasajero:</b> {{ activas[0].pasajero }}</p><p><b>A Cobrar:</b> Bs. {{ activas[0].monto }}</p><form action='/finalizar_viaje/{{ activas[0].id }}' method='POST'><button type='submit' style='background:#000; color:#FFD700; padding:10px 20px; border:none; border-radius:10px; font-weight:bold; cursor:pointer; width:100%;'>✅ Marcar como Finalizado y Pagado</button></form></div>{% endif %}</body>
 </html>
+
 
 
 

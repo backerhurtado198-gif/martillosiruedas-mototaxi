@@ -13,6 +13,16 @@
         button { background: #f39c12; color: #121212; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.3s; }
         button:hover { background: #e67e22; }
     </style>
+<link rel="manifest" href="/static/manifest.json">
+<meta name="theme-color" content="#FFD700">
+<link rel="apple-touch-icon" href="/static/uploads/logo.jpg">
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW ok')).catch(err => console.log('SW error', err));
+    });
+}
+</script>
 </head>
 <body>
     <div class="card">
@@ -32,3 +42,4 @@
     </div>
 </body>
 </html>
+

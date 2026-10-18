@@ -26,7 +26,17 @@
             margin: 0 auto 15px auto !important;
         }
     </style>
-    </head>
+    <link rel="manifest" href="/static/manifest.json">
+<meta name="theme-color" content="#FFD700">
+<link rel="apple-touch-icon" href="/static/uploads/logo.jpg">
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW ok')).catch(err => console.log('SW error', err));
+    });
+}
+</script>
+</head>
 <body>
     <div class="passenger-header">
         <h3>Pasajero: <span style="color:#fff;">{{ pasajero.nombre }}</span> | Tarifa del servicio: <span style="color:#00e676;">Bs. {{ tarifa }}</span></h3>
@@ -55,4 +65,5 @@
     </div>
 </body>
 </html>
+
 

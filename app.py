@@ -1,4 +1,6 @@
 ﻿import os
+import smtplib
+from email.mime.text import MIMEText
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, session
 from werkzeug.utils import secure_filename
 import sqlite3
@@ -167,6 +169,37 @@ def login_pasajero():
             
     return render_template('login_pasajero.html', config=cfg)
 
+@app.route('/registro', methods=['GET', 'POST'])
+def registro():
+    if request.method == 'POST':
+        nombre = request.form.get('nombre', '').strip()
+        tel = request.form.get('telefono', '').strip()
+        pin = request.form.get('pin', '').strip()
+        correo = request.form.get('correo', '').strip()
+        user = request.form.get('usuario', '').strip()
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        try:
+            cursor.execute('ALTER TABLE pasajeros ADD COLUMN correo TEXT')
+        except:
+            pass
+        cursor.execute('INSERT INTO pasajeros (nombre, telefono, usuario, pin, correo) VALUES (?, ?, ?, ?, ?)', (nombre, tel, user, pin, correo))
+        conn.commit()
+        conn.close()
+        try:
+            cuerpo = "Hola " + nombre + ",\n\nTu cuenta de pasajero ha sido creada exitosamente.\nUsuario: " + user + "\nPIN de acceso: " + pin + "\n\n¡Bienvenido a Martillos & Ruedas!"
+            msg = MIMEText(cuerpo)
+            msg['Subject'] = 'Confirmacion de Registro - Pasajero'
+            msg['From'] = 'TU_CORREO@gmail.com'
+            msg['To'] = correo
+            server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+            server.login('TU_CORREO@gmail.com', 'TU_CLAVE_DE_APLICACION_DE_16_LETRAS')
+            server.send_message(msg)
+            server.quit()
+        except Exception as e:
+            print('Error enviando correo:', e)
+        return redirect(url_for('login_pasajero'))
+    return render_template('registro.html')
 @app.route('/panel_admin', methods=['GET', 'POST'])
 def panel_admin():
     if not session.get('admin'): return redirect(url_for('login'))
@@ -520,6 +553,7 @@ def estado_pasajero():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 

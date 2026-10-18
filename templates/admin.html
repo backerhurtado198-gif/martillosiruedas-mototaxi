@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Panel de Administración - Martillos & Ruedas</title>
+    <title>Panel de AdministraciÃ³n - Martillos & Ruedas</title>
     <style>
         body { background-color: #121212; color: #e0e0e0; font-family: Arial, sans-serif; margin: 0; padding: 20px; }
         .admin-header { background: #1e1e1e; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #333; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
@@ -22,10 +22,20 @@
         th { color: #ff9800; }
         input[type="text"], select { background: #222; color: #fff; border: 1px solid #444; padding: 8px; border-radius: 4px; width: 100%; box-sizing: border-box; }
     </style>
+<link rel="manifest" href="/static/manifest.json">
+<meta name="theme-color" content="#FFD700">
+<link rel="apple-touch-icon" href="/static/uploads/logo.jpg">
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW ok')).catch(err => console.log('SW error', err));
+    });
+}
+</script>
 </head>
 <body>
     <div class="admin-header">
-        <h2>Panel de Administración - Martillos & Ruedas</h2>
+        <h2>Panel de AdministraciÃ³n - Martillos & Ruedas</h2>
         <div class="controls-group">
             <form method="POST" class="control-box">
                 <span>Tarifa Global (Bs.):</span>
@@ -37,22 +47,22 @@
                 <input type="text" name="nuevo_admin_pin" placeholder="PIN" required>
                 <button type="submit" class="btn-amber">Cambiar PIN</button>
             </form>
-            <a href="{{ url_for('admin_bp.admin_logout') }}" class="btn-danger" style="padding: 8px 16px;">Cerrar Sesión</a>
+            <a href="{{ url_for('admin_bp.admin_logout') }}" class="btn-danger" style="padding: 8px 16px;">Cerrar SesiÃ³n</a>
         </div>
     </div>
 
-    <!-- Métricas -->
+    <!-- MÃ©tricas -->
     <div style="display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap;">
         <div class="card" style="flex: 1; min-width: 200px; margin: 0;">
             <div style="color: #aaa; font-size: 13px;">Ventas Totales Sistema</div>
             <div style="color: #00e676; font-size: 20px; font-weight: bold; margin-top: 5px;">Bs. 0</div>
         </div>
         <div class="card" style="flex: 1; min-width: 200px; margin: 0;">
-            <div style="color: #aaa; font-size: 13px;">Comisión Sistema (15%)</div>
+            <div style="color: #aaa; font-size: 13px;">ComisiÃ³n Sistema (15%)</div>
             <div style="color: #00e676; font-size: 20px; font-weight: bold; margin-top: 5px;">Bs. 0</div>
         </div>
         <div class="card" style="flex: 1; min-width: 200px; margin: 0;">
-            <div style="color: #aaa; font-size: 13px;">Comisión Padrinos (3%)</div>
+            <div style="color: #aaa; font-size: 13px;">ComisiÃ³n Padrinos (3%)</div>
             <div style="color: #00e676; font-size: 20px; font-weight: bold; margin-top: 5px;">Bs. 0</div>
         </div>
         <div class="card" style="flex: 1; min-width: 200px; margin: 0;">
@@ -61,19 +71,19 @@
         </div>
     </div>
 
-    <!-- Gestión de Pasajeros -->
+    <!-- GestiÃ³n de Pasajeros -->
     <div class="card">
-        <h3 style="color: #ff9800; margin-top: 0;">Gestión de Pasajeros</h3>
+        <h3 style="color: #ff9800; margin-top: 0;">GestiÃ³n de Pasajeros</h3>
         <form method="POST" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 15px;">
             <div style="flex: 1; min-width: 150px;"><label style="font-size: 12px; color: #aaa;">Nombre:</label><input type="text" name="nombre" required></div>
-            <div style="flex: 1; min-width: 120px;"><label style="font-size: 12px; color: #aaa;">Cédula:</label><input type="text" name="cedula"></div>
-            <div style="flex: 1; min-width: 120px;"><label style="font-size: 12px; color: #aaa;">Teléfono:</label><input type="text" name="telefono"></div>
+            <div style="flex: 1; min-width: 120px;"><label style="font-size: 12px; color: #aaa;">CÃ©dula:</label><input type="text" name="cedula"></div>
+            <div style="flex: 1; min-width: 120px;"><label style="font-size: 12px; color: #aaa;">TelÃ©fono:</label><input type="text" name="telefono"></div>
             <div style="flex: 1; min-width: 120px;"><label style="font-size: 12px; color: #aaa;">Usuario:</label><input type="text" name="usuario"></div>
             <div style="flex: 1; min-width: 100px;"><label style="font-size: 12px; color: #aaa;">PIN:</label><input type="text" name="pin" required></div>
             <button type="submit" class="btn-amber" style="height: 38px;">Registrar Pasajero</button>
         </form>
         <table>
-            <thead><tr><th>ID</th><th>Nombre</th><th>Cédula</th><th>Teléfono</th><th>Usuario</th><th>PIN</th><th>Acción</th></tr></thead>
+            <thead><tr><th>ID</th><th>Nombre</th><th>CÃ©dula</th><th>TelÃ©fono</th><th>Usuario</th><th>PIN</th><th>AcciÃ³n</th></tr></thead>
             <tbody>
                 {% if pasajeros %}
                     {% for p in pasajeros %}
@@ -94,9 +104,9 @@
         </table>
     </div>
 
-    <!-- Gestión de Choferes -->
+    <!-- GestiÃ³n de Choferes -->
     <div class="card">
-        <h3 style="color: #ff9800; margin-top: 0;">Gestión de Choferes y Recarga de Saldo</h3>
+        <h3 style="color: #ff9800; margin-top: 0;">GestiÃ³n de Choferes y Recarga de Saldo</h3>
         <form method="POST" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 15px;">
             <div style="flex: 2; min-width: 180px;"><label style="font-size: 12px; color: #aaa;">Nombre:</label><input type="text" name="nombre_chofer" required></div>
             <div style="flex: 1; min-width: 100px;"><label style="font-size: 12px; color: #aaa;">PIN (4 dig):</label><input type="text" name="pin_chofer" required></div>
@@ -142,9 +152,9 @@
     <div class="card">
         <h3 style="color: #ff9800; margin-top: 0;">Centro Maestro de Carreras y Comisiones</h3>
         <table>
-            <thead><tr><th>ID</th><th>Tipo</th><th>Precio</th><th>Estado</th><th>Chofer</th><th>Pasajero</th><th>Comisión Sistema (15%)</th><th>Padrino (3%)</th></tr></thead>
+            <thead><tr><th>ID</th><th>Tipo</th><th>Precio</th><th>Estado</th><th>Chofer</th><th>Pasajero</th><th>ComisiÃ³n Sistema (15%)</th><th>Padrino (3%)</th></tr></thead>
             <tbody>
-                <tr><td colspan="8" style="text-align: center; color: #777;">No hay carreras registradas todavía.</td></tr>
+                <tr><td colspan="8" style="text-align: center; color: #777;">No hay carreras registradas todavÃ­a.</td></tr>
             </tbody>
         </table>
     </div>
@@ -159,3 +169,4 @@
     </div>
 </body>
 </html>
+

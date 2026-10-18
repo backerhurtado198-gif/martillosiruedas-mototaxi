@@ -64,7 +64,17 @@
             margin: 0 auto 15px auto !important;
         }
     </style>
-    </head>
+    <link rel="manifest" href="/static/manifest.json">
+<meta name="theme-color" content="#FFD700">
+<link rel="apple-touch-icon" href="/static/uploads/logo.jpg">
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW ok')).catch(err => console.log('SW error', err));
+    });
+}
+</script>
+</head>
 <body>
     <div class="container">
         <div class="header">
@@ -161,6 +171,7 @@
     </script>
 {% if viaje_activo %}<div style='position:fixed; bottom:20px; right:20px; background:#121212; color:#fff; padding:20px; border-radius:15px; z-index:9999; box-shadow:0 4px 10px rgba(0,0,0,0.5); border: 2px solid #FFD700;'><h3 style='margin-top:0; color:#FFD700;'>🚕 Tu Chofer va en camino</h3><p><b>Chofer:</b> {{ viaje_activo.chofer_nombre }}</p><p><b>Moto:</b> {{ viaje_activo.moto_modelo }} ({{ viaje_activo.moto_color }}) - Placa: {{ viaje_activo.moto_placa }}</p><p><b>Teléfono (Pago Móvil):</b> <span style='color:#FFD700; font-size:18px; font-weight:bold;'>{{ viaje_activo.chofer_tel }}</span></p><div style='background:#222; padding:10px; border-radius:8px; margin-top:10px; text-align:center;'><small style='color:#ccc;'>Paga directamente al chofer al llegar a tu destino.</small></div></div>{% endif %}</body>
 </html>
+
 
 
 

@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <title>Panel del Chofer - Martillos & Ruedas</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="manifest" href="/static/manifest.json">
+<meta name="theme-color" content="#FFD700">
+<link rel="apple-touch-icon" href="/static/uploads/logo.jpg">
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW ok')).catch(err => console.log('SW error', err));
+    });
+}
+</script>
 </head>
 <body class="dark-theme">
     <div class="container">
@@ -41,3 +51,4 @@
     </div>
 </body>
 </html>
+
