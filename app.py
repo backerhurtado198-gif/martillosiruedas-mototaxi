@@ -8,6 +8,87 @@ from datetime import datetime, timedelta
 
 app = Flask(__name__)
 app.secret_key = 'martillos_ruedas_secret_key'
+# === BLINDAJE DE SESION UNICA ADMIN ===
+import uuid
+
+@app.before_request
+def blindaje_admin_before():
+    if request.path.startswith('/panel_admin'):
+        if not session.get('admin'):
+            return redirect(url_for('login'))
+        if request.method == 'GET':
+            if not session.get('admin_ticket'):
+                session.pop('admin', None)
+                session.pop('admin_tab_id', None)
+                return redirect(url_for('login'))
+            session['admin_ticket'] = False
+        elif request.method == 'POST':
+            form_tab = request.form.get('_tab_id', '')
+            if session.get('admin_tab_id') and form_tab and form_tab != session.get('admin_tab_id'):
+                session.pop('admin', None)
+                return redirect(url_for('login'))
+
+@app.after_request
+def blindaje_admin_after(response):
+    if request.method == 'POST' and request.path in ['/', '/login'] and session.get('admin'):
+        session['admin_ticket'] = True
+        session['admin_tab_id'] = uuid.uuid4().hex
+
+    if request.method == 'POST' and session.get('admin') and response.status_code in [301, 302, 303, 307, 308]:
+        loc = response.headers.get('Location', '')
+        if 'panel_admin' in loc and request.path not in ['/', '/login']:
+            session['admin_ticket'] = True
+
+    if request.path.startswith('/panel_admin') and response.content_type.startswith('text/html'):
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+        html = response.get_data(as_text=True)
+        tab_id = session.get('admin_tab_id', 'unico')
+        script_seguridad = f'''
+<script>
+(function() {{
+    const TAB_ID = "{tab_id}";
+    try {{
+        localStorage.setItem('mr_admin_active_tab', TAB_ID + '_' + Date.now());
+        const bc = new BroadcastChannel('mr_admin_lock');
+        bc.postMessage({{ type: 'LOCK', tabId: TAB_ID }});
+        bc.onmessage = function(ev) {{
+            if (ev.data && ev.data.type === 'LOCK') {{
+                window.location.replace('/login');
+            }}
+        }};
+    }} catch(e) {{}}
+    window.addEventListener('storage', function(e) {{
+        if (e.key === 'mr_admin_active_tab') {{
+            window.location.replace('/login');
+        }}
+    }});
+    window.addEventListener('pageshow', function(e) {{
+        if (e.persisted) {{
+            window.location.replace('/login');
+        }}
+    }});
+    document.addEventListener('DOMContentLoaded', function() {{
+        document.querySelectorAll('form').forEach(function(f) {{
+            const inp = document.createElement('input');
+            inp.type = 'hidden';
+            inp.name = '_tab_id';
+            inp.value = TAB_ID;
+            f.appendChild(inp);
+        }});
+    }});
+}})();
+</script>
+'''
+        if '</head>' in html:
+            html = html.replace('</head>', script_seguridad + '</head>', 1)
+        else:
+            html = script_seguridad + html
+        response.set_data(html)
+    return response
+# === FIN BLINDAJE DE SESION UNICA ADMIN ===
+
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
