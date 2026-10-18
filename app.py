@@ -235,52 +235,83 @@ def login_pasajero():
     if request.method == 'POST':
         usuario = request.form.get('usuario', '').strip()
         pin = request.form.get('pin', '').strip()
-        
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
-        cursor.execute("SELECT nombre FROM pasajeros WHERE (usuario = ? OR nombre = ?) AND pin = ?", (usuario, usuario, pin))
+        cursor.execute(
+            "SELECT nombre FROM pasajeros WHERE (LOWER(usuario) = LOWER(?) OR LOWER(nombre) = LOWER(?) OR cedula = ? OR telefono = ?) AND pin = ?",
+            (usuario, usuario, usuario, usuario, pin)
+        )
         pasajero_row = cursor.fetchone()
         conn.close()
-        
         if pasajero_row or (usuario.lower() == 'backer' and pin == '7777'):
             session['pasajero'] = pasajero_row[0] if pasajero_row else 'Backer Hurtado'
             return redirect(url_for('panel_pasajero'))
         else:
-            flash("Usuario o PIN incorrecto.", "error")
-            
+            flash('Usuario, Cédula o PIN incorrecto', 'error')
     return render_template('login_pasajero.html', config=cfg)
 
 @app.route('/registro', methods=['GET', 'POST'])
 def registro():
+    cfg = get_config()
     if request.method == 'POST':
         nombre = request.form.get('nombre', '').strip()
+        cedula = request.form.get('cedula', '').strip()
         tel = request.form.get('telefono', '').strip()
-        pin = request.form.get('pin', '').strip()
-        correo = request.form.get('correo', '').strip()
         user = request.form.get('usuario', '').strip()
+        correo = request.form.get('correo', '').strip()
+        pin = request.form.get('pin', '').strip()
+
+        if not (nombre and cedula and tel and user and pin):
+            flash('Por favor completa todos los campos obligatorios.', 'error')
+            return render_template('registro.html', config=cfg)
+
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
         try:
-            cursor.execute('ALTER TABLE pasajeros ADD COLUMN correo TEXT')
+            cursor.execute("ALTER TABLE pasajeros ADD COLUMN correo TEXT")
         except:
             pass
-        cursor.execute('INSERT INTO pasajeros (nombre, telefono, usuario, pin, correo) VALUES (?, ?, ?, ?, ?)', (nombre, tel, user, pin, correo))
+
+        cursor.execute("SELECT id FROM pasajeros WHERE LOWER(usuario) = LOWER(?) OR cedula = ?", (user, cedula))
+        existe = cursor.fetchone()
+        if existe:
+            conn.close()
+            flash('El usuario o la cédula ya están registrados. Inicia sesión.', 'error')
+            return render_template('registro.html', config=cfg)
+
+        cursor.execute(
+            "INSERT INTO pasajeros (nombre, cedula, telefono, usuario, pin, correo) VALUES (?, ?, ?, ?, ?, ?)",
+            (nombre, cedula, tel, user, pin, correo)
+        )
         conn.commit()
         conn.close()
-        try:
-            cuerpo = "Hola " + nombre + ",\n\nTu cuenta de pasajero ha sido creada exitosamente.\nUsuario: " + user + "\nPIN de acceso: " + pin + "\n\n¡Bienvenido a Martillos & Ruedas!"
-            msg = MIMEText(cuerpo)
-            msg['Subject'] = 'Confirmacion de Registro - Pasajero'
-            msg['From'] = 'TU_CORREO@gmail.com'
-            msg['To'] = correo
-            server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-            server.login('TU_CORREO@gmail.com', 'TU_CLAVE_DE_APLICACION_DE_16_LETRAS')
-            server.send_message(msg)
-            server.quit()
-        except Exception as e:
-            print('Error enviando correo:', e)
-        return redirect(url_for('login_pasajero'))
-    return render_template('registro.html')
+
+        if correo:
+            try:
+                cuerpo = f"Hola {nombre},
+
+Tu cuenta de pasajero ha sido creada exitosamente.
+Usuario: {user}
+Cédula: {cedula}
+PIN de acceso: {pin}
+
+¡Bienvenido a Martillos & Ruedas!"
+                msg = MIMEText(cuerpo)
+                msg['Subject'] = 'Confirmacion de Registro - Martillos & Ruedas'
+                msg['From'] = 'TU_CORREO@gmail.com'
+                msg['To'] = correo
+                server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+                server.login('TU_CORREO@gmail.com', 'TU_CLAVE_DE_APLICACION_DE_16_LETRAS')
+                server.send_message(msg)
+                server.quit()
+            except Exception as e:
+                print("Aviso correo:", e)
+
+        session['pasajero'] = nombre
+        return redirect(url_for('panel_pasajero'))
+
+    return render_template('registro.html', config=cfg)
+
 @app.route('/panel_admin', methods=['GET', 'POST'])
 def panel_admin():
     if not session.get('admin'): return redirect(url_for('login'))

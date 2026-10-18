@@ -1,46 +1,86 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MartillosiRuedas - Registro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Martillos & Ruedas - Registro de Pasajero</title>
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#ffcc00">
     <style>
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: #1a1d20; color: #f8f9fa; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
-        .card { background: #2b3036; padding: 30px; border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); width: 100%; max-width: 420px; border: 1px solid #3a4047; }
-        h2 { color: #ffcc00; margin: 0 0 20px 0; font-size: 22px; text-transform: uppercase; text-align: center; }
-        label { display: block; font-size: 12px; font-weight: bold; color: #ffcc00; margin-bottom: 4px; }
-        input, select { width: 100%; padding: 10px; margin-bottom: 14px; border: 1px solid #4a515a; border-radius: 8px; background: #1a1d20; color: #fff; box-sizing: border-box; font-size: 14px; }
-        input:focus, select:focus { border-color: #ffcc00; outline: none; }
-        .campos-moto { background: #22262a; padding: 12px; border-radius: 10px; border: 1px dashed #ffcc00; margin-bottom: 14px; display: none; }
-        button { width: 100%; padding: 13px; background: #ffcc00; color: #111; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        button:hover { background: #e6b800; }
-        a { color: #aaa; text-decoration: none; font-size: 13px; display: block; text-align: center; margin-top: 15px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: radial-gradient(circle at top, #1f1f1f, #0d0d0d); color: #fff; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .card { background: #181818; border: 2px solid #ffcc00; border-radius: 18px; width: 100%; max-width: 420px; padding: 28px 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { color: #ffcc00; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; }
+        .header p { color: #aaa; font-size: 13px; margin-top: 5px; }
+        .alert { background: rgba(255, 59, 48, 0.2); border: 1px solid #ff3b30; color: #ff6b6b; padding: 10px 12px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; text-align: center; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 12px; color: #ffcc00; margin-bottom: 5px; font-weight: 600; text-transform: uppercase; }
+        .form-group input { width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid #333; background: #222; color: #fff; font-size: 15px; outline: none; transition: border 0.2s; }
+        .form-group input:focus { border-color: #ffcc00; background: #262626; }
+        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .btn-submit { width: 100%; padding: 14px; background: linear-gradient(135deg, #ffcc00, #ff9900); color: #000; font-weight: 800; font-size: 16px; border: none; border-radius: 12px; cursor: pointer; text-transform: uppercase; margin-top: 8px; transition: transform 0.15s; }
+        .btn-submit:active { transform: scale(0.98); }
+        .links { text-align: center; margin-top: 18px; display: flex; flex-direction: column; gap: 10px; }
+        .links a { color: #ffcc00; text-decoration: none; font-size: 14px; font-weight: 600; }
+        .links a.sec { color: #888; font-size: 13px; font-weight: normal; }
     </style>
-<link rel="manifest" href="/static/manifest.json">
-<meta name="theme-color" content="#FFD700">
-<link rel="apple-touch-icon" href="/static/uploads/logo.jpg">
-<script>
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW ok')).catch(err => console.log('SW error', err));
-    });
-}
-</script>
 </head>
 <body>
     <div class="card">
-        <h2>Crear Cuenta</h2>
-        <form action="/registro" method="POST"> <input type="email" name="correo" placeholder="Tu correo Gmail" required> <input type="text" name="nombre" placeholder="Nombre completo" required> <input type="text" name="usuario" placeholder="Nombre de usuario" required> <input type="tel" name="telefono" placeholder="Teléfono" required> <input type="password" name="pin" placeholder="Crea tu PIN (Ej. 1234)" required> <button type="submit">Registrarme</button></form>
-        <a href="/">¿Ya tienes cuenta? Inicia sesión</a>
-    </div>
+        <div class="header">
+            <h1>🛵 Crear Cuenta</h1>
+            <p>Regístrate como pasajero en Martillos & Ruedas</p>
+        </div>
 
-    <script>
-        function toggleMoto() {
-            const rol = document.getElementById('rol').value;
-            document.getElementById('seccion-moto').style.display = (rol === 'chofer') ? 'block' : 'none';
-        }
-    </script>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('registro') }}">
+            <div class="form-group">
+                <label>Nombre y Apellido *</label>
+                <input type="text" name="nombre" placeholder="Ej. Juan Pérez" required>
+            </div>
+
+            <div class="row-2">
+                <div class="form-group">
+                    <label>Cédula *</label>
+                    <input type="text" name="cedula" placeholder="Ej. 19473986" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono (WhatsApp) *</label>
+                    <input type="tel" name="telefono" placeholder="0412-0000000" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Correo Electrónico (Opcional)</label>
+                <input type="email" name="correo" placeholder="tucorreo@gmail.com">
+            </div>
+
+            <div class="row-2">
+                <div class="form-group">
+                    <label>Usuario *</label>
+                    <input type="text" name="usuario" placeholder="Ej. juanp26" required>
+                </div>
+                <div class="form-group">
+                    <label>PIN de Acceso *</label>
+                    <input type="password" name="pin" placeholder="Ej. 1234" maxlength="8" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">✅ Registrarme y Entrar</button>
+        </form>
+
+        <div class="links">
+            <a href="{{ url_for('login_pasajero') }}">¿Ya tienes cuenta? Inicia sesión aquí</a>
+            <a href="{{ url_for('login') }}" class="sec">← Volver al inicio principal</a>
+        </div>
+    </div>
 </body>
 </html>
-
-
