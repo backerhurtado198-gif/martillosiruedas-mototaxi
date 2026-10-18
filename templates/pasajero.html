@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Pasajero - Martillos & Ruedas</title>
+    <style>
+        body { background-color: #121212; color: #e0e0e0; font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        .passenger-header { background: #1e1e1e; padding: 15px 20px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #333; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .passenger-header h3 { color: #ff9800; margin: 0; font-size: 16px; }
+        .btn-danger { background: #f44336; color: #fff; font-weight: bold; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 13px; text-decoration: none; display: inline-block; }
+        .btn-danger:hover { background: #d32f2f; }
+        .btn-amber { background: #ff9800; color: #000; font-weight: bold; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        .btn-amber:hover { background: #e68900; }
+        .card { background: #1a1a1a; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #333; }
+        select { background: #222; color: #fff; border: 1px solid #444; padding: 8px; border-radius: 4px; width: 100%; box-sizing: border-box; }
+    </style>
+    <style>
+        /* Ajuste óptimo del Banner Institucional para evitar recortes */
+        .panel-pasajero img, .container img, img[alt*="Banner"], img[alt*="institucional"], .banner-img {
+            max-width: 100% !important;
+            height: 170px !important;
+            object-fit: contain !important;
+            background-color: #111 !important;
+            border-radius: 12px !important;
+            display: block !important;
+            margin: 0 auto 15px auto !important;
+        }
+    </style>
+    </head>
+<body>
+    <div class="passenger-header">
+        <h3>Pasajero: <span style="color:#fff;">{{ pasajero.nombre }}</span> | Tarifa del servicio: <span style="color:#00e676;">Bs. {{ tarifa }}</span></h3>
+        <a href="{{ url_for('pasajero_bp.login_pasajero') }}" class="btn-danger">Cerrar SesiÃ³n</a>
+    </div>
+
+    <div class="card">
+        <h3 style="color: #ff9800; margin-top: 0;">Solicitar Servicio de Moto-Taxi</h3>
+        <div style="margin-bottom: 15px;">
+            <label style="font-size: 12px; color: #aaa;">Tipo de Servicio:</label>
+            <select style="margin-top: 5px;">
+                <option>Moto-Taxi Standard ( Bs. {{ tarifa }} )</option>
+            </select>
+        </div>
+        <button class="btn-amber">Pedir Carrera Ahora</button>
+    </div>
+
+    <div class="card">
+        <h3 style="color: #ff9800; margin-top: 0;">Historial y Estado de Mis Viajes</h3>
+        <table>
+            <thead><tr><th>ID</th><th>Tipo</th><th>Precio</th><th>Estado</th><th>Chofer Asignado</th></tr></thead>
+            <tbody>
+                <tr><td colspan="5" style="text-align: center; color: #777;">No has solicitado carreras todavÃ­a.</td></tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+

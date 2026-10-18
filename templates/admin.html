@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Administración - Martillos & Ruedas</title>
+    <style>
+        body { background-color: #121212; color: #e0e0e0; font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        .admin-header { background: #1e1e1e; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #333; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .admin-header h2 { color: #ff9800; margin: 0; font-size: 20px; }
+        .controls-group { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        .control-box { display: flex; align-items: center; gap: 8px; background: #252525; padding: 6px 12px; border-radius: 6px; border: 1px solid #444; margin: 0; }
+        .control-box span { color: #ccc; font-size: 13px; font-weight: bold; }
+        .control-box input { width: 80px; background: #111; color: #00e676; border: 1px solid #555; border-radius: 4px; padding: 5px; text-align: center; font-size: 14px; font-weight: bold; }
+        .btn-amber { background: #ff9800; color: #000; font-weight: bold; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+        .btn-amber:hover { background: #e68900; }
+        .btn-danger { background: #f44336; color: #fff; font-weight: bold; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; text-decoration: none; display: inline-block; }
+        .btn-danger:hover { background: #d32f2f; }
+        .btn-success { background: #00e676; color: #000; font-weight: bold; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .card { background: #1a1a1a; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #333; font-size: 14px; }
+        th { color: #ff9800; }
+        input[type="text"], select { background: #222; color: #fff; border: 1px solid #444; padding: 8px; border-radius: 4px; width: 100%; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <h2>Panel de Administración - Martillos & Ruedas</h2>
+        <div class="controls-group">
+            <form method="POST" class="control-box">
+                <span>Tarifa Global (Bs.):</span>
+                <input type="text" name="tarifa" value="{{ tarifa }}" required>
+                <button type="submit" class="btn-amber">Actualizar</button>
+            </form>
+            <form method="POST" class="control-box">
+                <span>Nuevo PIN Admin:</span>
+                <input type="text" name="nuevo_admin_pin" placeholder="PIN" required>
+                <button type="submit" class="btn-amber">Cambiar PIN</button>
+            </form>
+            <a href="{{ url_for('admin_bp.admin_logout') }}" class="btn-danger" style="padding: 8px 16px;">Cerrar Sesión</a>
+        </div>
+    </div>
+
+    <!-- Métricas -->
+    <div style="display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap;">
+        <div class="card" style="flex: 1; min-width: 200px; margin: 0;">
+            <div style="color: #aaa; font-size: 13px;">Ventas Totales Sistema</div>
+            <div style="color: #00e676; font-size: 20px; font-weight: bold; margin-top: 5px;">Bs. 0</div>
+        </div>
+        <div class="card" style="flex: 1; min-width: 200px; margin: 0;">
+            <div style="color: #aaa; font-size: 13px;">Comisión Sistema (15%)</div>
+            <div style="color: #00e676; font-size: 20px; font-weight: bold; margin-top: 5px;">Bs. 0</div>
+        </div>
+        <div class="card" style="flex: 1; min-width: 200px; margin: 0;">
+            <div style="color: #aaa; font-size: 13px;">Comisión Padrinos (3%)</div>
+            <div style="color: #00e676; font-size: 20px; font-weight: bold; margin-top: 5px;">Bs. 0</div>
+        </div>
+        <div class="card" style="flex: 1; min-width: 200px; margin: 0;">
+            <div style="color: #aaa; font-size: 13px;">Deuda Acumulada a Choferes</div>
+            <div style="color: #ff5252; font-size: 20px; font-weight: bold; margin-top: 5px;">Bs. 0.0</div>
+        </div>
+    </div>
+
+    <!-- Gestión de Pasajeros -->
+    <div class="card">
+        <h3 style="color: #ff9800; margin-top: 0;">Gestión de Pasajeros</h3>
+        <form method="POST" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 15px;">
+            <div style="flex: 1; min-width: 150px;"><label style="font-size: 12px; color: #aaa;">Nombre:</label><input type="text" name="nombre" required></div>
+            <div style="flex: 1; min-width: 120px;"><label style="font-size: 12px; color: #aaa;">Cédula:</label><input type="text" name="cedula"></div>
+            <div style="flex: 1; min-width: 120px;"><label style="font-size: 12px; color: #aaa;">Teléfono:</label><input type="text" name="telefono"></div>
+            <div style="flex: 1; min-width: 120px;"><label style="font-size: 12px; color: #aaa;">Usuario:</label><input type="text" name="usuario"></div>
+            <div style="flex: 1; min-width: 100px;"><label style="font-size: 12px; color: #aaa;">PIN:</label><input type="text" name="pin" required></div>
+            <button type="submit" class="btn-amber" style="height: 38px;">Registrar Pasajero</button>
+        </form>
+        <table>
+            <thead><tr><th>ID</th><th>Nombre</th><th>Cédula</th><th>Teléfono</th><th>Usuario</th><th>PIN</th><th>Acción</th></tr></thead>
+            <tbody>
+                {% if pasajeros %}
+                    {% for p in pasajeros %}
+                    <tr>
+                        <td>#{{ p.id }}</td>
+                        <td>{{ p.nombre }}</td>
+                        <td>{{ p.cedula }}</td>
+                        <td>{{ p.telefono }}</td>
+                        <td>{{ p.usuario }}</td>
+                        <td>{{ p.pin }}</td>
+                        <td><a href="{{ url_for('admin_bp.eliminar_pasajero', id=p.id) }}" class="btn-danger">Eliminar</a></td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="7" style="text-align: center; color: #777;">No hay pasajeros registrados.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Gestión de Choferes -->
+    <div class="card">
+        <h3 style="color: #ff9800; margin-top: 0;">Gestión de Choferes y Recarga de Saldo</h3>
+        <form method="POST" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 15px;">
+            <div style="flex: 2; min-width: 180px;"><label style="font-size: 12px; color: #aaa;">Nombre:</label><input type="text" name="nombre_chofer" required></div>
+            <div style="flex: 1; min-width: 100px;"><label style="font-size: 12px; color: #aaa;">PIN (4 dig):</label><input type="text" name="pin_chofer" required></div>
+            <div style="flex: 1; min-width: 100px;"><label style="font-size: 12px; color: #aaa;">Unidad:</label><input type="text" name="unidad"></div>
+            <div style="flex: 2; min-width: 180px;"><label style="font-size: 12px; color: #aaa;">Padrino:</label>
+                <select name="padrino">
+                    <option value="Sin Padrino (Independiente)">Sin Padrino (Independiente)</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-amber" style="height: 38px;">Registrar Chofer</button>
+        </form>
+        <table>
+            <thead><tr><th>ID</th><th>Nombre</th><th>PIN</th><th>Unidad</th><th>Padrino</th><th>Saldo Chofer</th><th>Ganancias Pendientes (Deuda)</th><th>Acciones Admin</th></tr></thead>
+            <tbody>
+                {% if choferes %}
+                    {% for ch in choferes %}
+                    <tr>
+                        <td>#{{ ch.id }}</td>
+                        <td>{{ ch.nombre }}</td>
+                        <td>{{ ch.pin }}</td>
+                        <td>{{ ch.unidad }}</td>
+                        <td>{{ ch.padrino }}</td>
+                        <td style="color: #00e676; font-weight: bold;">Bs. {{ ch.saldo }}</td>
+                        <td style="color: #ff5252; font-weight: bold;">Bs. {{ ch.deuda }}</td>
+                        <td>
+                            <form action="{{ url_for('admin_bp.recargar_chofer', id=ch.id) }}" method="POST" style="display:inline-flex; gap:5px; align-items:center;">
+                                <input type="text" name="monto" placeholder="Monto Bs." style="width:70px; padding:3px; background:#111; color:#fff; border:1px solid #444; font-size:11px;">
+                                <button type="submit" class="btn-success">Recargar</button>
+                            </form>
+                            <a href="{{ url_for('admin_bp.liquidar_chofer', id=ch.id) }}" class="btn-amber" style="padding: 5px 8px; font-size:11px; text-decoration:none; color:#000;">Liquidar</a>
+                            <a href="{{ url_for('admin_bp.eliminar_chofer', id=ch.id) }}" class="btn-danger" style="margin-left:3px;">Eliminar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="8" style="text-align: center; color: #777;">No hay choferes registrados.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Centro Maestro de Carreras y Comisiones -->
+    <div class="card">
+        <h3 style="color: #ff9800; margin-top: 0;">Centro Maestro de Carreras y Comisiones</h3>
+        <table>
+            <thead><tr><th>ID</th><th>Tipo</th><th>Precio</th><th>Estado</th><th>Chofer</th><th>Pasajero</th><th>Comisión Sistema (15%)</th><th>Padrino (3%)</th></tr></thead>
+            <tbody>
+                <tr><td colspan="8" style="text-align: center; color: #777;">No hay carreras registradas todavía.</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Banner Publicitario -->
+    <div class="card">
+        <h3 style="color: #ff9800; margin-top: 0;">Banner Publicitario</h3>
+        <form action="{{ url_for('admin_bp.upload_banner') }}" method="POST" enctype="multipart/form-data" style="display: flex; gap: 10px; align-items: center;">
+            <input type="file" name="banner" style="color: #fff;">
+            <button type="submit" class="btn-amber">Subir / Cambiar Publicidad</button>
+        </form>
+    </div>
+</body>
+</html>
